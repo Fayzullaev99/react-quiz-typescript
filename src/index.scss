@@ -1,5 +1,233 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  background: #0b0d30;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0px auto;
+  padding: 0 12px;
+}
+
+.navbar {
+  padding: 20px;
+  background: #1c1c9f;
+  color: #fff;
+  box-shadow: 0px 5px 15px rgb(0, 0, 0);
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__number,
+  &__score {
+    font-size: 25px;
+    font-weight: 500;
+    color: #fff;
+  }
+}
+
+.quiz {
+  text-align: center;
+
+  
+
+  &__button {
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  &__prev,
+  &__next {
+    background: rgb(23, 100, 23);
+    font-size: 25px;
+    font-weight: 500;
+
+    &:disabled {
+      background: rgba(23, 100, 23, 0.5);
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.card {
+  margin-top: 30px;
+
+  &__question {
+    font-size: 25px;
+    font-weight: 700;
+    color: #fff;
+
+    span {
+      margin-left: 10px;
+    }
+  }
+
+  &__block {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  &__answer {
+    width: 100%;
+    border: 2px solid #fff;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+
+    &.correct {
+      background: green;
+      color: #fff;
+    }
+
+    &.answer {
+      background: red;
+      color: #fff;
+    }
+  }
+}
+
+.form {
+  margin-top: 40px;
+  .container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  &__control{
+    display: block;
+    width: 100%;
+    height: 45px;
+    padding: 10px 15px;
+    font-size: 15px;
+    line-height: 1.42857143;
+    color: #464545;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #f1f1f1;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+
+  &__label{
+    display: inline-block;
+    max-width: 100%;
+    margin: 15px 0;
+    font-weight: bold;
+    color: #fff;
+  }
+  &__start {
+    border: 3px solid #fff;
+    font-size: 25px;
+    font-weight: 500;
+    margin-top: 20px;
+
+    &:hover {
+      background: blue;
+      color: #fff;
+    }
+  }
+}
+.form__control, input, textarea {
+  border: 2px hidden transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+
+.loader {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 8px solid;
+    border-color: blue blue transparent transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+
+    &::after,
+    &::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      border: 5px solid;
+      border-color: transparent transparent #FF3D00 #FF3D00;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      animation: rotationBack 0.5s linear infinite;
+      transform-origin: center center;
+    }
+
+    &::before {
+      width: 72px;
+      height: 72px;
+      border-color: blue blue transparent transparent;
+      animation: rotation 1.5s linear infinite;
+    }
+  }
+}
+
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
 }

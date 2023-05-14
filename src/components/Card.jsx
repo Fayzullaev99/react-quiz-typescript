@@ -16,27 +16,33 @@ const QuestionCard = ({
     callback,
     userAnswer,
     questionNr,
-    totalQuestions,
-  }) => (
-    <>
-        <p className='number'>
-            Question: {questionNr} / {totalQuestions}
-        </p>
-        <p dangerouslySetInnerHTML={{ __html: question }} />
-        <div>
-            {answers.map((answer) => (
-                <button
-                    key={answer}
-                    correct={userAnswer?.correctAnswer === answer}
-                    userClicked={userAnswer?.answer === answer}
-                >
-                    <button disabled={userAnswer ? true : false} value={answer} onClick={callback}>
+}) => (
+    <div className='card'>
+        {console.log(userAnswer)}
+        <div className="container">
+            <p className='card__question'>
+                {questionNr}.<span dangerouslySetInnerHTML={{ __html: question }} />
+            </p>
+            <div className='card__block'>
+                {answers.map((answer) => (
+                    <button
+                        key={answer}
+                        disabled={userAnswer ? true : false} 
+                        value={answer} 
+                        onClick={callback} 
+                        className={
+                            userAnswer?.correctAnswer === answer 
+                            ? 'card__answer correct' 
+                            : userAnswer?.answer === answer 
+                            ? 'card__answer answer' : 'card__answer'
+                        }
+                    >
                         <span dangerouslySetInnerHTML={{ __html: answer }} />
                     </button>
-                </button>
-            ))}
+                ))}
+            </div>
         </div>
-    </>
+    </div>
 );
 
 export default QuestionCard;
