@@ -1,106 +1,92 @@
-import { ReactNode, createContext, useState } from "react";
-import { Difficulty, QuestionsState, UseFetch } from "../hooks/useFetch";
-type ContextTypes = {
-    TOTAL_QUESTIONS: number,
-    score: number,
-    loading: boolean,
-    gameOver: boolean,
-    number: number,
-    questions: QuestionsState[],
-    userAnswers: AnswerObject[],
-    checkAnswer: (e: any) => void,
-    startTrivia: () => void,
-    nextQuestion: () => void,
-    prevQuestion: () => void,
-}
-export type AnswerObject = {
-    question: string;
-    answer: string;
-    correct: boolean;
-    correctAnswer: string;
-};
+import { ReactNode, createContext, useState, useEffect } from "react";
+import { AnswerObject, ApiData, ContextTypes, DataState, shuffleArray } from "../utils";
 
-const TOTAL_QUESTIONS = 100;
+const TOTAL_QUESTIONS = 10;
 type ContextProps = {
     children: ReactNode
 }
+export const Context = createContext<ContextTypes>({
+    TOTAL_QUESTIONS: 10,
+    score: 0,
+    loading: false,
+    number: 1,
+    gameOver: true,
+    data: [],
+    answerObj: [],
+    checkAnswer: (e: any) => console.log('test'),
+    restartGame: () => console.log('test'),
+    nextQuestion: () => console.log('test'),
+    prevQuestion: () => console.log('test')
 
 
-export const Context = createContext<ContextTypes | null>(null);
+});
 
 export const ContextProvider = ({ children }: ContextProps) => {
     const [loading, setLoading] = useState(false);
-    const [questions, setQuestions] = useState<QuestionsState[]>([]);
+    const [data, setData] = useState<DataState[]>([]);
     const [number, setNumber] = useState(0);
-    const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
+    const [answerObj, setAnswerObj] = useState<AnswerObject[]>([]);
     const [score, setScore] = useState(0);
     const [gameOver, setGameOver] = useState(true);
 
-    const startTrivia = async () => {
-        setLoading(true);
-        setGameOver(false);
-        const newQuestions = await UseFetch(
-            TOTAL_QUESTIONS,
-            Difficulty.EASY
-        );
-
-        setQuestions(newQuestions);
-        setScore(0);
-        setUserAnswers([]);
-        setNumber(0);
-        setLoading(false);
-    };
-
     const checkAnswer = (e: any) => {
         if (!gameOver) {
-            const answer = e.currentTarget.value;
-            const correct = questions[number].correct_answer === answer;
-            if (correct) setScore((prev) => prev + 1);
+            const userAnswer = e.currentTarget.value;
+            const check = data[number].correct_answer === userAnswer;
+            if (check) setScore((prev) => prev + 1);
             const answerObject = {
-                question: questions[number].question,
-                answer,
-                correct,
-                correctAnswer: questions[number].correct_answer,
+                question: data[number].question,
+                userAnswer,
+                check,
+                correctAnswer: data[number].correct_answer,
             };
-            setUserAnswers((prev) => [...prev, answerObject]);
+            setAnswerObj((prev) => [...prev, answerObject]);
         }
     };
 
     const nextQuestion = () => {
-        const nextQ = number + 1;
-        if (nextQ === TOTAL_QUESTIONS) {
+        const next = number + 1;
+        if (next === TOTAL_QUESTIONS) {
             setGameOver(true);
         } else {
-            setNumber(nextQ);
+            setNumber(next);
         }
     };
     const prevQuestion = () => {
-        const prevQ = number - 1;
-        if (prevQ < 0) {
-            setGameOver(true);
-        } else {
-            setNumber(prevQ);
-        }
+        setNumber(prev => prev - 1);
+    };
+    const restartGame = () => {
+        window.location.reload()
     };
 
 
-    // useEffect(() => {
+    useEffect(() => {
+        setLoading(true);
+        setGameOver(false);
+        (async function () {
+            const response = await (await fetch(`https://opentdb.com/api.php?amount=10&type=multiple`)).json();
+            let res = response.results.map((question: ApiData) => ({
+                ...question,
+                answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+            }))
+            setData(res)
+            setLoading(false);
+        })()
+    }, [])
 
-    // }, [third])
-    
 
 
     return <Context.Provider value={{
+        data,
         TOTAL_QUESTIONS,
         score,
         loading,
-        gameOver,
         number,
-        questions,
-        userAnswers,
+        gameOver,
+        answerObj,
         checkAnswer,
-        startTrivia,
         nextQuestion,
         prevQuestion,
+        restartGame
     }}>{children}</Context.Provider>
 }
